@@ -45,6 +45,9 @@ jobs:
           jb init
           jb install https://github.com/grafana/grafonnet-lib/grafonnet
           jb install https://github.com/grafana/jsonnet-libs/grafana-builder
+          
+          jsonnetfmt -v
+          jsonnet-lint -v
   
       - name: Jsonnet format check
         run: |
