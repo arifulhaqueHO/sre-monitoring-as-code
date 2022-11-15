@@ -22,6 +22,7 @@ jobs:
       repositoryName: ${{ github.event.repository.name }}
       promtoolImageName: sre-promtool
       promtoolVersion: 2.38.0
+      user: ho-cto
     secrets: inherit
 
   notify-alerts:
