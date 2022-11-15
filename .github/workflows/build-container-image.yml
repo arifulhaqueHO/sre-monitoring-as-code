@@ -91,12 +91,21 @@ jobs:
         run: |
           snyk container test --file=${{inputs.imageBuildContext}}/Dockerfile --sarif-file-output=snyk.sarif --app-vulns --severity-threshold=medium ${{ env.IMAGE_TAG }}
         continue-on-error: true
+      - name: Update GITHUB_REF
+        run: |
+              if [[ ! "$GITHUB_REF" =~ ^refs\/.*$ ]]; then
+                echo "UPLOAD_SARIF_REF=refs/heads/$GITHUB_REF" >> "$GITHUB_ENV"
+              else
+                echo "UPLOAD_SARIF_REF=$GITHUB_REF" >> "$GITHUB_ENV"
+              fi
       - name: Debug env
         run: env
       - name: Upload result to GitHub Code Scanning
         uses: github/codeql-action/upload-sarif@v2
         with:
           sarif_file: snyk.sarif
+          sha: ${{ github.sha }}
+          ref: ${{ env.UPLOAD_SARIF_REF }}
       - name: Check on failures
         if: steps.snyk-dockerfile.outcome != 'success'
         run: exit 1
